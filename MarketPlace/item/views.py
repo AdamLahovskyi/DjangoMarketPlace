@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404, redirect
 from django.db.models import Q
 from django.contrib.auth.decorators import login_required
 
+from decimal import Decimal
 
 from .forms import NewItemForm, EditItemForm
 from .models import Item, Category
@@ -10,8 +11,34 @@ from .models import Item, Category
 def items(request):
     query = request.GET.get('query', '')
     category_id = request.GET.get('category', 0)
+    sort_by = request.GET.get('sort_by', 'name')  # Default to sorting by name
+
+    # Get min and max price from query parameters
+    min_price = request.GET.get('min_price')
+    max_price = request.GET.get('max_price')
+
     items = Item.objects.filter(is_sold=False)
     categories = Category.objects.all()
+
+    if category_id:
+        items = items.filter(category_id=category_id)
+
+    if query:
+        items = items.filter(Q(name__icontains=query) | Q(description__icontains=query))
+
+    # Add sorting logic
+    if sort_by == 'name_desc':
+        items = items.order_by('-name')
+    elif sort_by == 'price':
+        items = items.order_by('price')
+    elif sort_by == 'price_desc':
+        items = items.order_by('-price')
+
+    # Apply price range filter
+    if min_price is not None:
+        items = items.filter(price__gte=Decimal(min_price))
+    if max_price is not None:
+        items = items.filter(price__lte=Decimal(max_price))
 
     if category_id:
         items = items.filter(category_id=category_id)
@@ -24,6 +51,9 @@ def items(request):
         'query': query,
         'categories': categories,
         'category_id': int(category_id),
+        'sort_by': sort_by,
+        'min_price': min_price,
+        'max_price': max_price,
     })
 
 def detail(request, pk):

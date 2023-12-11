@@ -5,18 +5,17 @@
     <div class="pb-6 grid grid-cols-4 gap-4 bg-gray-100">
         <div class="col-span-1">
             <form method="get" action="{% url 'item:items' %}">
-                <input name="query" class="w-full py-2 px-4 border rounded-xl mb-2" type="text" value="{{query}}" placeholder="Find a...">
+                <input name="query" class="mt-3 ml-2 w-full py-2 px-4 border rounded-xl mb-2" type="text" value="{{ query }}" placeholder="Find a...">
                 <button class="ml-2 mt-2 py-2 px-4 text-lg bg-teal-500 text-white rounded-xl">Search</button>
             </form>
 
             <hr class="my-6">
 
             <p class="font-semibold ml-3">Categories</p>
-
             <ul>
-                {% for category in categories  %}
+                {% for category in categories %}
                     <li class="ml-3 py-2 px-2 rounded-xl{% if category.id == category_id %} bg-gray-200{% endif %}">
-                        <a href="{% url 'item:items' %}?query={{ query }}&category={{category.id}}">{{category.name}}</a>
+                        <a href="{% url 'item:items' %}?query={{ query }}&category={{ category.id }}">{{ category.name }}</a>
                     </li>
                 {% endfor %}
             </ul>
@@ -32,21 +31,48 @@
         </div>
 
         <div class="col-span-3">
-            <div class="grid grid-cols-3 gap-3">
-            {% for item in items %}
-                <div>
-                    <a href="{% url 'item:detail' item.id %}">
-                        <div>
-                            <img src="{{item.image.url}}" class="rounded-t-xl">
-                        </div>
-                        <div class="p-4 bg-white rounded-b-xl">
-                            <h2 class="text-2xl">{{item.name}}</h2>
-                            <p class="text-gray-500">Made By: {{item.made_by}}</p>
-                            <p class="text-gray-500">Price: {{item.price}}$</p>
-                        </div>
-                    </a>
+            <!-- Sorting Section -->
+            <div class="mt-3 mr-2 flex justify-between items-center mb-4">
+                <strong>Sort by:</strong>
+                <div class="flex items-center">
+                    <div class="mr-4">
+                        <span class="font-semibold">Sort:</span>
+                        <select onchange="window.location.href=this.value" class="border rounded p-2">
+                            <option value="?sort_by=name{% if sort_by == 'name' %}_desc{% endif %}">Name &uarr;</option>
+                            <option value="?sort_by=name_desc{% if sort_by == 'name_desc' %}_desc{% endif %}">Name &darr;</option>
+                            <option value="?sort_by=price{% if sort_by == 'price' %}_desc{% endif %}">Price &uarr;</option>
+                            <option value="?sort_by=price_desc{% if sort_by == 'price_desc' %}_desc{% endif %}">Price &darr;</option>
+                        </select>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="font-semibold">Price Range:</span>
+                        <form method="get" action="{% url 'item:items' %}" class="flex items-center ml-2">
+                            <div class="flex items-center border rounded overflow-hidden">
+                                <input name="min_price" class="py-2 px-2 w-16 border-r" type="text" value="{{ min_price }}" placeholder="Min">
+                                <span class="mx-2">to</span>
+                                <input name="max_price" class="py-2 px-2 w-16" type="text" value="{{ max_price }}" placeholder="Max">
+                            </div>
+                            <button class="ml-2 py-2 px-4 text-lg bg-teal-500 text-white rounded">Apply</button>
+                        </form>
+                    </div>
                 </div>
-            {% endfor %}
+            </div>
+
+            <div class="grid grid-cols-3 gap-3">
+                {% for item in items %}
+                    <div>
+                        <a href="{% url 'item:detail' item.id %}">
+                            <div>
+                                <img src="{{ item.image.url }}" class="rounded-t-xl">
+                            </div>
+                            <div class="p-4 bg-white rounded-b-xl">
+                                <h2 class="text-2xl">{{ item.name }}</h2>
+                                <p class="text-gray-500">Made By: {{ item.made_by }}</p>
+                                <p class="text-gray-500">Price: {{ item.price }}$</p>
+                            </div>
+                        </a>
+                    </div>
+                {% endfor %}
             </div>
         </div>
     </div>

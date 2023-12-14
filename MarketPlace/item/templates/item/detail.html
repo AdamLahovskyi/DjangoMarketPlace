@@ -21,6 +21,8 @@
             </p>
         {% endif %}
 
+
+
         {% if request.user == item.created_by %}
             <div class="mt-6 p-6 bg-white rounded-xl">
                 <p>This Item Is Yours.</p>
@@ -29,7 +31,15 @@
                 <a href="{%url 'item:delete' item.id%}" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-red-500 text-white rounded-xl">Delete</a>
             </div>
         {%else%}
-            <a href="#" class="inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Contact Seller</a>
+            <select class="form-select mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition" id="qty-cart">
+                <option selected disabled>Select Quantity</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <button type="button" value={{item.name}} id="add-cart" class="btn btn-secondary inline-block mt-6 px-6 py-3 text-lg font-semibold bg-teal-500 text-white rounded-xl hover:bg-teal-700">Add To Cart</button>
         {%endif%}
     </div>
 </div>
@@ -54,4 +64,32 @@
             {% endfor %}
         </div>
     </div>
+
+<script>
+    //check if button is pressed
+    $(document).on('click', '#add-cart', function (e){
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart:cart_add' %}',
+            data:{
+                //product_id: $('#add-cart').val(),
+                product_id: '{{ item.id }}',
+                product_qty: $('#qty-cart option:selected').text(),
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                action: 'post'
+
+            },
+            success: function (json){
+                //$(".qty").load(".qty")
+                document.getElementById("cart_quantity").textContent = json.qty
+            },
+            error: function (xhr, errmsg, err){
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+
+        });
+    })
+</script>
 {% endblock %}
+

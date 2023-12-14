@@ -38,19 +38,19 @@
                     <div class="mr-4">
                         <span class="font-semibold">Sort:</span>
                         <select onchange="window.location.href=this.value" class="border rounded p-2">
-                            <option value="?sort_by=name{% if sort_by == 'name' %}_desc{% endif %}">Name &uarr;</option>
-                            <option value="?sort_by=name_desc{% if sort_by == 'name_desc' %}_desc{% endif %}">Name &darr;</option>
-                            <option value="?sort_by=price{% if sort_by == 'price' %}_desc{% endif %}">Price &uarr;</option>
-                            <option value="?sort_by=price_desc{% if sort_by == 'price_desc' %}_desc{% endif %}">Price &darr;</option>
+                            <option value="?sort_by=name{% if sort_by == 'name' %}_desc{% endif %}" {% if sort_by == 'name' %}selected{% endif %}>Name &uarr;</option>
+                            <option value="?sort_by=name_desc{% if sort_by == 'name_desc' %}_desc{% endif %}" {% if sort_by == 'name_desc' %}selected{% endif %}>Name &darr;</option>
+                            <option value="?sort_by=price{% if sort_by == 'price' %}_desc{% endif %}" {% if sort_by == 'price' %}selected{% endif %}>Price &uarr;</option>
+                            <option value="?sort_by=price_desc{% if sort_by == 'price_desc' %}_desc{% endif %}" {% if sort_by == 'price_desc' %}selected{% endif %}>Price &darr;</option>
                         </select>
                     </div>
                     <div class="flex items-center">
                         <span class="font-semibold">Price Range:</span>
                         <form method="get" action="{% url 'item:items' %}" class="flex items-center ml-2">
                             <div class="flex items-center border rounded overflow-hidden">
-                                <input name="min_price" class="py-2 px-2 w-16 border-r" type="text" value="{{ min_price }}" placeholder="Min">
+                                <input name="min_price" class="py-2 px-2 w-16 border-r" type="text" value="{% if min_price %}{{ min_price }}{% endif %}" placeholder="Min">
                                 <span class="mx-2">to</span>
-                                <input name="max_price" class="py-2 px-2 w-16" type="text" value="{{ max_price }}" placeholder="Max">
+                                <input name="max_price" class="py-2 px-2 w-16" type="text" value="{% if max_price %}{{ max_price }}{% endif %}" placeholder="Max">
                             </div>
                             <button class="ml-2 py-2 px-4 text-lg bg-teal-500 text-white rounded">Apply</button>
                         </form>

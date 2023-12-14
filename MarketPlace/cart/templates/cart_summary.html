@@ -1,0 +1,55 @@
+{% extends 'core/base.html' %}
+
+{% block title %} Cart Summary {% endblock %}
+
+{% block content %}
+    <div class="mt-6 px-6 py-12 bg-gray-100 rounded-xl">
+        <h2 class="mb-12 text-2xl text-center">Cart Summary</h2>
+
+        <div class="grid grid-cols-3 gap-3">
+            {% if cart_products %}
+                {% for item in cart_products %}
+                    <div>
+                        <a href="{% url 'item:detail' item.id %}">
+                            <div>
+                                <img src="{{ item.image.url }}" class="rounded-t-xl">
+                            </div>
+                            <div class="p-6 bg-white rounded-b-xl">
+                                <h2 class="text-2xl">{{ item.name }}</h2>
+                                <p class="text-gray-500">Made By: {{ item.made_by }}</p>
+                                <p class="text-gray-500">Price: {{ item.price }}$</p>
+                        </a>
+                                <!-- Add the select element here -->
+                                <select class="form-select mt-4 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring focus:ring-blue-200 transition">
+                                    <option selected disabled>Select Quantity</option>
+
+                                        {% for key, value in quantities.items%}
+                                            {% if key == item.id|slugify %}
+                                                <option selected>{{value}}</option>
+                                            {%endif%}
+                                        {% endfor %}
+
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
+                                    <option value="3">3</option>
+                                    <option value="4">4</option>
+                                    <option value="5">5</option>
+                                </select>
+                                <div class="flex mt-4 space-x-4">
+                                    <button class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition">UPDATE</button>
+                                    <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:border-red-300 transition">DELETE</button>
+                                </div>
+
+                            </div>
+
+
+                    </div>
+                {% endfor %}
+            {% else %}
+                <div class="font-bold text-xl text-red-500">
+                    Your Cart Is Empty
+                </div>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

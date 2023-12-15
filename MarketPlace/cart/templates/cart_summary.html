@@ -37,7 +37,7 @@
                                 </select>
                                 <div class="flex mt-4 space-x-4">
                                     <button type="button" data-index="{{item.id}}" class="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:border-blue-300 transition update-cart">UPDATE</button>
-                                    <button class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:border-red-300 transition ">DELETE</button>
+                                    <button data-index="{{item.id}}" class="bg-red-500 hover:bg-red-700 text-white py-2 px-4 rounded-md focus:outline-none focus:ring focus:border-red-300 transition delete-cart">DELETE</button>
                                 </div>
 
                             </div>
@@ -76,6 +76,26 @@
                 console.log(xhr.status + ": " + xhr.responseText);
             }
 
+        });
+    })
+
+    $(document).on('click', '.delete-cart', function (e){
+        e.preventDefault();
+        let productid = $(this).data('index');
+        $.ajax({
+            type: 'POST',
+            url: '{% url 'cart:cart_delete' %}',
+            data:{
+                product_id: productid,
+                csrfmiddlewaretoken: '{{csrf_token}}',
+                action: 'post'
+            },
+            success: function (json){
+                location.reload();
+            },
+            error: function (xhr, errmsg, err){
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
         });
     })
 </script>
